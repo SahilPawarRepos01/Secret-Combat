@@ -9,9 +9,12 @@ public class Player : MonoBehaviour
 
     [Header ("Player Movement")]
     [SerializeField] float movSpeed = 5f;
-    [SerializeField] float gravity = 10f;
+    [SerializeField] float gravity = 20f;
     [SerializeField] float jumpForce = 5f;
+    [SerializeField] float verticalVelocity = 0f;
     private bool isGrounded = true;
+    private bool isJumping = false;
+    private bool isRunning = false;
     //bool isRunning = false;
 
     private void Start()
@@ -30,10 +33,15 @@ public class Player : MonoBehaviour
     {
         // Player Movement              <---
         float xAxis = 0f;
+        if(xAxis == 0)
+        {
+            isRunning = false;
+        }
         // bool isMoving = xAxis != 0f;
 
         if (Input.GetKey(KeyCode.A))
         {
+            isRunning = true;
             Debug.Log("Left");
             spriteRenderer.flipX = true;
             //playerAnimation.Running();
@@ -41,6 +49,7 @@ public class Player : MonoBehaviour
         }
         else if (Input.GetKey(KeyCode.D))
         {
+            isRunning = true;
             Debug.Log("Right");
             spriteRenderer.flipX = false;
             xAxis = 1f;
@@ -63,12 +72,34 @@ public class Player : MonoBehaviour
         transform.position += playerVector;
 
         // Player Jump                  <---
-        Vector3 jump = Vector3.up;
 
-        if (Input.GetKeyDown(KeyCode.W) && isGrounded == true || Input.GetKeyDown(KeyCode.Space) && isGrounded == true)
+        if (Input.GetKeyDown(KeyCode.W) && isGrounded || Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
+            verticalVelocity = jumpForce;
             isGrounded = false;
-            
+            isJumping = true;
+        }
+        // Gravity
+        verticalVelocity -= gravity * Time.deltaTime;
+        // Vertical Movement
+        Vector3 verticalMovement = new Vector3(0, verticalVelocity *  Time.deltaTime, 0);
+        // Jump Movement
+        transform.position += verticalMovement;
+        // Checks the Y = 0 for isGrounded = true   
+        if (transform.position.y <= 0f)
+        {
+            transform.position = new Vector3(transform.position.x,0f, transform.position.z);
+            verticalVelocity = 0f;
+            isGrounded = true;
+
+            if (isRunning && xAxis==0)
+            {
+                playerAnimation.Idle();
+            }
+            else if(!isRunning && xAxis!=0)
+            {
+                playerAnimation.Run();
+            }
         }
 
         if (playerAnimation != null)

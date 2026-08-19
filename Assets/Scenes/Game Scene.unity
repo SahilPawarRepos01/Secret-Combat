@@ -152,8 +152,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Player
   spriteRenderer: {fileID: 722953748}
   movSpeed: 4
-  gravity: 10
+  gravity: 20
   jumpForce: 5
+  verticalVelocity: 8
 --- !u!4 &175272140
 Transform:
   m_ObjectHideFlags: 0
@@ -1018,6 +1019,7 @@ MonoBehaviour:
   movSpeed: 5
   gravity: 10
   jumpForce: 5
+  verticalVelocity: 8
 --- !u!1 &1765334394
 GameObject:
   m_ObjectHideFlags: 0
